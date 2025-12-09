@@ -8,9 +8,9 @@
 [![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/Polaris-Leo/Nakiri-Electricity-Cloudflare)
 **你需要修改3个环境变量，替换成你自己的信息**
 ```
-PART_ID = 校区 \ #（如：PART_ID = 奉贤）（奉贤|徐汇）
-BUILD_ID = 楼号 \ #（如：BUILD_ID = 18 代表18号楼）
-ROOM_ID = 宿舍号 \ #（如：ROOM_ID = 101）
+PART_ID = 校区  #（如：PART_ID = 奉贤）（奉贤|徐汇）
+BUILD_ID = 楼号  #（如：BUILD_ID = 18 代表18号楼）
+ROOM_ID = 宿舍号  #（如：ROOM_ID = 101）
 ```
 ![配置面板](assets/Cloudflare-Init.png)
 
