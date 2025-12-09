@@ -1,4 +1,4 @@
-name = "nakiri-electricity"
+name = "Nakiri-Electricity"
 main = "worker.js"
 compatibility_date = "2024-04-05"
 
@@ -9,7 +9,7 @@ bucket = "./dist"
 # --- D1 数据库配置 ---
 [[d1_databases]]
 binding = "DB"
-database_name = "nakiri-db"
+database_name = "electric-db"
 database_id = ""
 
 # --- 定时任务 (Cron) ---
