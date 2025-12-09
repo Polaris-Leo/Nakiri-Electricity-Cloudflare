@@ -1,4 +1,4 @@
-name = "Nakiri-Electricity（替换成你的项目名称）"
+name = "Nakiri-Electricity"
 main = "worker.js"
 compatibility_date = "2025-12-09"
 
@@ -8,8 +8,8 @@ bucket = "./dist"
 # --- D1 数据库 ---
 [[d1_databases]]
 binding = "DB"
-database_name = "（这里填入数据库名称）"
-database_id = "（如果你是手动创建的，这里填入你创建的数据库ID）"
+database_name = "Nakiri-Electricity-DB"
+database_id = "12345678-1234-5678-1234-123456789012"
 
 # --- 定时任务 (Cron) ---
 # 每小时执行一次
