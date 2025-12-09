@@ -1,22 +1,22 @@
 name = "nakiri-electricity"
 main = "worker.js"
-compatibility_date = "2025-12-09"
+compatibility_date = "2024-04-05"
 
+# --- 静态资源托管 ---
 [site]
 bucket = "./dist"
 
-# --- D1 数据库 ---
+# --- D1 数据库配置 ---
 [[d1_databases]]
 binding = "DB"
-database_name = "electric-db"
-database_id = "f6d50a47-3174-4803-bea5-b0b18d9fc79f"
+database_name = "nakiri-db"
+database_id = ""
 
 # --- 定时任务 (Cron) ---
-# 每小时执行一次
 [triggers]
 crons = ["0 * * * *"]
 
-# --- 环境变量 ---
+# --- 环境变量 (默认值) ---
 [vars]
 ROOM_ID = "507"
 PART_ID = "徐汇"
