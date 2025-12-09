@@ -4,7 +4,7 @@
 特点：单体架构 (Monolith)，零成本，自动爬虫，美观图表。
 
 ### 🚀 快速开始
-点击即可一键部署到Cloudflare上（需要Cloudflare账户）<br>
+点击即可一键部署到Cloudflare上（需要Cloudflare账户）<br>  
 [![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/Polaris-Leo/Nakiri-Electricity-Cloudflare)
 
 ### 🛠️ 手动部署
