@@ -13,8 +13,6 @@ PART_ID = 校区  #（如：PART_ID = 奉贤）（奉贤|徐汇）
 BUILD_ID = 楼号  #（如：BUILD_ID = 18 代表18号楼）
 ROOM_ID = 宿舍号  #（如：ROOM_ID = 101）
 ```
-![配置面板](assets/Cloudflare-Init.png)
-
 #### 示例配置：
 ##### 示例配置1：
 奉贤校区，5号楼，202：
@@ -37,6 +35,7 @@ PART_ID = 徐汇
 BUILD_ID = 南区4A
 ROOM_ID = 101
 ```
+![配置面板](assets/Cloudflare-Init.png)
 
 ## Nakiri Electricity 是一个现代化、高颜值的宿舍电量监控面板。
 
