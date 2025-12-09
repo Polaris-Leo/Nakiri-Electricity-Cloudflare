@@ -5,7 +5,7 @@
 
 ### 🚀 快速开始
 点击即可一键部署到Cloudflare上（需要Cloudflare账户）<br>  
-[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/Polaris-Leo/Nakiri-Electricity-Cloudflare)
+[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/Polaris-Leo/Nakiri-Electricity-Cloudflare)<br>  
 **你需要修改3个环境变量，替换成你自己的信息**
 ```
 PART_ID = 校区  #（如：PART_ID = 奉贤）（奉贤|徐汇）
