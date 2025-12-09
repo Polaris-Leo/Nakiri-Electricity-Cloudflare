@@ -5,6 +5,9 @@
 
 ### 🚀 快速开始
 
+[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/Polaris-Leo/Nakiri-Electricity-Cloudflare)
+
+### 🛠️ 手动部署
 #### 1. 安装依赖
 ```
 npm install
@@ -45,7 +48,7 @@ PART_ID: 校区 (如 徐汇)
 
 BUILD_ID: 楼号 (如 18)
 
-### 🛠️ 本地开发
+#### 7.本地开发
 ```
 npx wrangler dev
 ```
