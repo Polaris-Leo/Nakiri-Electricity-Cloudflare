@@ -9,7 +9,7 @@ bucket = "./dist"
 [[d1_databases]]
 binding = "DB"
 database_name = "Nakiri-Electricity-DB"
-database_id = "12345678-1234-5678-1234-123456789012"
+database_id = "f6d50a47-3174-4803-bea5-b0b18d9fc79f"
 
 # --- 定时任务 (Cron) ---
 # 每小时执行一次
