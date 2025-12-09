@@ -8,6 +8,7 @@
 [![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/Polaris-Leo/Nakiri-Electricity-Cloudflare)<br>  
 #### **项目名称** 和 **数据库名称** 可以自定义，其余选项保持默认即可。<br>
 **你需要修改3个环境变量，替换成你自己的信息** （格式内容参考模板和示例）
+#### 参考模板：
 ```
 PART_ID = 校区  #（如：PART_ID = 奉贤）（奉贤|徐汇）
 BUILD_ID = 楼号  #（如：BUILD_ID = 18 代表18号楼）
