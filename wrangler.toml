@@ -1,38 +1,23 @@
-name = "nakiri-electricity"
+name = "Nakiri-Electricity（替换成你的项目名称）"
 main = "worker.js"
-compatibility_date = "2024-04-05"
+compatibility_date = "2025-12-09"
 
 [site]
 bucket = "./dist"
 
-# --- D1 数据库绑定 ---
+# --- D1 数据库 ---
 [[d1_databases]]
 binding = "DB"
-database_name = "nakiri-db"
-database_id = "f6d50a47-3174-4803-bea5-b0b18d9fc79f"
+database_name = "（这里填入数据库名称）"
+database_id = "（如果你是手动创建的，这里填入你创建的数据库ID）"
 
 # --- 定时任务 (Cron) ---
 # 每小时执行一次
 [triggers]
 crons = ["0 * * * *"]
 
-# --- 环境变量 (本地开发用) ---
+# --- 环境变量 ---
 [vars]
 ROOM_ID = "507"
 PART_ID = "徐汇"
 BUILD_ID = "18"
-
-[observability]
-enabled = false
-head_sampling_rate = 1
-
-[observability.logs]
-enabled = true
-head_sampling_rate = 1
-persist = true
-invocation_logs = true
-
-[observability.traces]
-enabled = false
-persist = true
-head_sampling_rate = 1
