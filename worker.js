@@ -14,6 +14,16 @@ const BASE_URL = "https://yktyd.ecust.edu.cn/epay/wxpage/wanxiao/eleresult";
 const USER_AGENT = "Mozilla/5.0 (Linux; U; Android 4.1.2; zh-cn; Chitanda/Akari) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30 MicroMessenger/6.0.0.58_r884092.501 NetType/WIFI";
 const REGEX = /(-?\d+(\.\d+)?)度/;
 
+// --- 自动初始化 SQL ---
+const INIT_SQL = `
+CREATE TABLE IF NOT EXISTS electricity (
+  timestamp TEXT,
+  room_id TEXT,
+  kWh REAL,
+  UNIQUE(timestamp, room_id)
+);
+`;
+
 const BUILDING_MAP = {
     "奉贤1号楼":"1", "奉贤2号楼":"2", "奉贤3号楼":"3", "奉贤4号楼":"4",
     "奉贤5号楼":"27", "奉贤6号楼":"28", "奉贤7号楼":"29", "奉贤8号楼":"30",
@@ -59,6 +69,16 @@ function autoGenerateUrl(env) {
     return `${BASE_URL}?sysid=1&roomid=${roomId}&areaid=${areaId}&buildid=${matchedBuildId}`;
 }
 
+// 数据库初始化辅助函数
+async function ensureTableExists(env) {
+    try {
+        await env.DB.prepare(INIT_SQL).run();
+        console.log("DB Table Initialized/Verified");
+    } catch (e) {
+        console.error("DB Init Failed:", e);
+    }
+}
+
 async function scrape(env) {
     const roomId = env.ROOM_ID;
     if (!roomId) return { error: "ROOM_ID not set" };
@@ -66,6 +86,13 @@ async function scrape(env) {
     if (!url) url = `${BASE_URL}?sysid=1&areaid=3&buildid=20&roomid=${roomId}`;
 
     try {
+        // 1. 在每次写入前，确保表存在 (Self-Healing)
+        if (env.DB) {
+            await ensureTableExists(env);
+        } else {
+            return { error: "DB binding missing" };
+        }
+
         const response = await fetch(url, { headers: { "User-Agent": USER_AGENT } });
         if (!response.ok) return { error: `HTTP ${response.status}` };
         const text = await response.text();
@@ -73,9 +100,7 @@ async function scrape(env) {
         if (match && match[1]) {
             const kwh = parseFloat(match[1]);
             const timestamp = new Date().toISOString();
-            if (env.DB) {
-                await env.DB.prepare("INSERT OR IGNORE INTO electricity (timestamp, room_id, kWh) VALUES (?, ?, ?)").bind(timestamp, roomId, kwh).run();
-            }
+            await env.DB.prepare("INSERT OR IGNORE INTO electricity (timestamp, room_id, kWh) VALUES (?, ?, ?)").bind(timestamp, roomId, kwh).run();
             return { success: true, kwh };
         }
         return { error: "Parse failed" };
@@ -84,7 +109,7 @@ async function scrape(env) {
     }
 }
 
-// --- HTML 渲染函数 (Tailwind CDN) ---
+// --- HTML 渲染函数 ---
 function renderHtml(result) {
     const isSuccess = result.success;
     const title = isSuccess ? "更新成功" : "更新失败";
@@ -104,32 +129,7 @@ function renderHtml(result) {
              <code class="text-xs text-red-200 break-all font-mono">${result.error || 'Unknown Error'}</code>
            </div>`;
 
-    return `
-    <!DOCTYPE html>
-    <html lang="zh-CN">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Nakiri - ${title}</title>
-        <script src="https://cdn.tailwindcss.com"></script>
-        <style>body { font-family: system-ui, -apple-system, sans-serif; }</style>
-    </head>
-    <body class="bg-black text-zinc-100 min-h-screen flex items-center justify-center p-4">
-        <div class="max-w-sm w-full bg-zinc-900 border border-zinc-800 rounded-3xl shadow-2xl p-8 text-center animate-[fade-in_0.5s_ease-out]">
-            <div class="w-20 h-20 ${colorClass} rounded-full flex items-center justify-center mx-auto mb-6">
-                ${icon}
-            </div>
-            <h1 class="text-2xl font-bold text-white mb-2">${title}</h1>
-            ${content}
-            <div class="pt-6 border-t border-zinc-800 mt-2">
-                <a href="/" class="group inline-flex items-center justify-center w-full py-3 px-4 bg-white text-black font-bold rounded-xl hover:bg-zinc-200 transition-all active:scale-95">
-                    <span>返回仪表盘</span>
-                    <svg class="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
-                </a>
-            </div>
-        </div>
-    </body>
-    </html>`;
+    return `<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Nakiri - ${title}</title><script src="https://cdn.tailwindcss.com"></script><style>body{font-family:system-ui,-apple-system,sans-serif}</style></head><body class="bg-black text-zinc-100 min-h-screen flex items-center justify-center p-4"><div class="max-w-sm w-full bg-zinc-900 border border-zinc-800 rounded-3xl shadow-2xl p-8 text-center animate-[fade-in_0.5s_ease-out]"><div class="w-20 h-20 ${colorClass} rounded-full flex items-center justify-center mx-auto mb-6">${icon}</div><h1 class="text-2xl font-bold text-white mb-2">${title}</h1>${content}<div class="pt-6 border-t border-zinc-800 mt-2"><a href="/" class="group inline-flex items-center justify-center w-full py-3 px-4 bg-white text-black font-bold rounded-xl hover:bg-zinc-200 transition-all active:scale-95"><span>返回仪表盘</span><svg class="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a></div></div></body></html>`;
 }
 
 // --- 主入口 ---
@@ -137,21 +137,18 @@ export default {
     async fetch(request, env, ctx) {
         const url = new URL(request.url);
         
-        // === API 路由部分 ===
-        
         // 1. GET /api/config
         if (url.pathname === '/api/config') {
             const roomId = env.ROOM_ID || 'Unset';
             const buildId = env.BUILD_ID;
             const partId = env.PART_ID;
-            
             let displayName = `Room ${roomId}`;
             if (buildId && partId) {
                 let campus = (partId === '0' || partId === '奉贤') ? "奉贤" : ((partId === '1' || partId === '徐汇') ? "徐汇" : partId);
                 let buildDisplay = /^\d+$/.test(buildId) ? `${buildId}号楼` : buildId;
                 displayName = `${campus}-${buildDisplay}-${roomId}`;
             }
-            return new Response(JSON.stringify({ roomId, displayName, version: 'Native-Worker-v1.0' }), { headers: { "Content-Type": "application/json" } });
+            return new Response(JSON.stringify({ roomId, displayName, version: 'Worker-AutoInit-v2.0' }), { headers: { "Content-Type": "application/json" } });
         }
 
         // 2. GET /api/data
@@ -168,25 +165,35 @@ export default {
                 const { results } = await env.DB.prepare(query).bind(...params).all();
                 return new Response(JSON.stringify(results), { headers: { "Content-Type": "application/json" } });
             } catch (e) {
+                // 2. 智能恢复：如果是因为表不存在导致的错误，尝试初始化并重试
+                if (e.message && e.message.includes("no such table")) {
+                    console.log("Table missing detected on read, initializing...");
+                    await ensureTableExists(env);
+                    // 重试查询
+                    try {
+                        let query = "SELECT * FROM electricity WHERE timestamp > datetime('now', '-30 days')";
+                        // 注意：这里需要重新构建查询，或者复用上面的逻辑。为简单起见，这里假设空表返回空数组。
+                        // 其实最简单的是初始化后返回空数组，因为刚初始化肯定没数据
+                        return new Response(JSON.stringify([]), { headers: { "Content-Type": "application/json" } });
+                    } catch (retryErr) {
+                        return new Response(JSON.stringify({ error: "Init failed: " + retryErr.message }), { status: 500, headers: { "Content-Type": "application/json" } });
+                    }
+                }
                 return new Response(JSON.stringify({ error: e.message }), { status: 500, headers: { "Content-Type": "application/json" } });
             }
         }
 
-        // 3. GET /api/scrape (美化版)
+        // 3. GET /api/scrape
         if (url.pathname === '/api/scrape') {
-            const result = await scrape(env);
-            
-            // 如果客户端明确要求 JSON (例如自动化脚本)，则返回 JSON
+            const result = await scrape(env); // scrape 内部已经包含了 ensureTableExists
             const accept = request.headers.get("Accept");
             if (accept && accept.includes("application/json")) {
                 return new Response(JSON.stringify(result), { headers: { "Content-Type": "application/json" } });
             }
-
-            // 否则返回美化的 HTML 页面
             return new Response(renderHtml(result), { headers: { "Content-Type": "text/html; charset=utf-8" } });
         }
 
-        // === 静态资源部分 (SPA) ===
+        // 4. Static Assets (SPA)
         try {
             return await getAssetFromKV(
                 { request, waitUntil: ctx.waitUntil.bind(ctx) },
