@@ -3,6 +3,8 @@
 这是一个基于 React 和 Cloudflare Workers 的全栈电量监测系统模板。<br>
 特点：单体架构 (Monolith)，零成本，自动爬虫，美观图表。
 
+![统计面板](assets/Dashboard.png)
+
 ### 🚀 快速开始
 点击即可一键部署到Cloudflare上（需要Cloudflare账户）<br>  
 [![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/Polaris-Leo/Nakiri-Electricity-Cloudflare)<br>  
@@ -41,8 +43,6 @@ ROOM_ID = 101
 ## Nakiri Electricity 是一个现代化、高颜值的宿舍电量监控面板。
 
 它可以帮助你实时追踪特定房间的电力消耗情况，提供详细的图表分析、充值记录检测以及剩余可用天数估算。
-
-![统计面板](assets/Dashboard.png)
 
 ✨ 功能特性
 
